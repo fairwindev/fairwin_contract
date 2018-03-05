@@ -337,7 +337,7 @@ contract Controller is Finalizable {
         return ledger.balanceOf(_a);
     }
 
-    function allowance(address _owner, address _spender) public onlyToken constant returns (uint256) {
+    function allowance(address _owner, address _spender) public onlyToken view returns (uint256) {
         return ledger.allowance(_owner, _spender);
     }
 
