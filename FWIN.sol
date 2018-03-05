@@ -382,7 +382,7 @@ contract Ledger is Finalizable {
     using SafeMath for uint256;
 
     address public controller;
-    mapping(address => uint256) balances;
+    mapping(address => uint256) internal balances;
     mapping(address => mapping(address => uint256)) internal allowed;
     uint256 totalSupply_;
     bool public mintingFinished = false;
@@ -402,6 +402,11 @@ contract Ledger is Finalizable {
     modifier canMint() {
         require(!mintingFinished);
         _;
+    }
+
+    function finishMinting() public onlyOwner canMint {
+        mintingFinished = true;
+        MintFinished();
     }
 
     /**
@@ -539,7 +544,7 @@ contract Ledger is Finalizable {
      * @param _amount The amount of tokens to mint.
      * @return A boolean that indicates if the operation was successful.
      */
-    function mint(address _to, uint256 _amount) canMint public returns (bool) {
+    function mint(address _to, uint256 _amount) public canMint returns (bool) {
         require(msg.sender == controller || msg.sender == owner);
         totalSupply_ = totalSupply_.add(_amount);
         balances[_to] = balances[_to].add(_amount);
